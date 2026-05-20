@@ -1,0 +1,38 @@
+<view class="login-container">
+    <view class="login-header">
+        <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+        <text class="title">{{isLogin ? '登录' : '注册'}}</text>
+        <text class="subtitle">共享充电宝系统</text>
+    </view>
+
+    <view class="login-form">
+        <view class="form-item">
+            <view class="form-label">用户名</view>
+            <input
+                    class="form-input"
+                    placeholder="请输入用户名"
+                    value="{{username}}"
+                    bindinput="onUsernameInput"
+            />
+        </view>
+
+        <view class="form-item">
+            <view class="form-label">密码</view>
+            <input
+                    class="form-input"
+                    placeholder="请输入密码（至少6位）"
+                    password
+                    value="{{password}}"
+                    bindinput="onPasswordInput"
+            />
+        </view>
+
+        <button class="submit-btn" bindtap="handleSubmit">
+            {{isLogin ? '登录' : '注册'}}
+        </button>
+
+        <view class="toggle-mode" bindtap="toggleMode">
+            <text>{{isLogin ? '还没有账号？去注册' : '已有账号？去登录'}}</text>
+        </view>
+    </view>
+</view>

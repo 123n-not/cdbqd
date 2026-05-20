@@ -1,0 +1,63 @@
+<view class="station-container" wx:if="{{station}}">
+    <view class="station-info-card">
+        <view class="station-header">
+            <text class="station-name">{{station.name}}</text>
+        </view>
+
+        <view class="info-row">
+            <text class="info-label">📍 地址：</text>
+            <text class="info-value">{{station.address}}</text>
+        </view>
+
+        <view class="info-row" wx:if="{{station.description}}">
+            <text class="info-label">📝 描述：</text>
+            <text class="info-value">{{station.description}}</text>
+        </view>
+
+        <view class="info-row">
+            <text class="info-label">🔌 可用：</text>
+            <text class="info-value highlight">{{station.availableSlots}}/{{station.totalSlots}}</text>
+        </view>
+    </view>
+
+    <view class="powerbank-section">
+        <view class="section-title">可借用充电宝</view>
+
+        <view class="powerbank-list">
+            <block wx:if="{{powerBanks.length > 0}}">
+                <view
+                        class="powerbank-card"
+                        wx:for="{{powerBanks}}"
+                        wx:key="id"
+                        bindtap="onRentPowerBank"
+                        data-id="{{item.id}}"
+                >
+                    <view class="powerbank-header">
+                        <text class="powerbank-id">编号：{{item.serialNumber}}</text>
+                        <view class="battery-level">
+                            <text class="battery-text">{{item.batteryLevel}}%</text>
+                        </view>
+                    </view>
+
+                    <view class="powerbank-body">
+                        <view class="status-badge">
+                            <text class="status-text">可借用</text>
+                        </view>
+                    </view>
+
+                    <view class="powerbank-footer">
+                        <text class="rent-btn">点击借用</text>
+                    </view>
+                </view>
+            </block>
+
+            <view class="empty-state" wx:if="{{powerBanks.length === 0 && !loading}}">
+                <text class="empty-text">暂无可借用充电宝</text>
+            </view>
+
+            <view class="loading-state" wx:if="{{loading}}">
+                <text class="loading-text">加载中...</text>
+            </view>
+        </view>
+    </view>
+</view>

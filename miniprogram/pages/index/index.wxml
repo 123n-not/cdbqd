@@ -1,0 +1,53 @@
+<view class="index-container">
+    <view class="search-bar">
+        <input
+                class="search-input"
+                placeholder="搜索投放点名称或地址"
+                value="{{keyword}}"
+                bindinput="onSearchInput"
+                bindconfirm="onSearch"
+        />
+        <view class="search-btn" bindtap="onSearch">搜索</view>
+    </view>
+
+    <view class="station-list">
+        <block wx:if="{{stations.length > 0}}">
+            <view
+                    class="station-card"
+                    wx:for="{{stations}}"
+                    wx:key="id"
+                    bindtap="onStationTap"
+                    data-id="{{item.id}}"
+            >
+                <view class="station-header">
+                    <text class="station-name">{{item.name}}</text>
+                    <view class="station-status">
+                        <text class="available-count">{{item.availableSlots}}</text>
+                        <text class="total-count">/{{item.totalSlots}}</text>
+                    </view>
+                </view>
+
+                <view class="station-info">
+                    <text class="info-text">📍 {{item.address}}</text>
+                </view>
+
+                <view class="station-desc" wx:if="{{item.description}}">
+                    <text class="desc-text">{{item.description}}</text>
+                </view>
+
+                <view class="station-footer">
+                    <text class="footer-text">可借用充电宝</text>
+                    <text class="arrow">›</text>
+                </view>
+            </view>
+        </block>
+
+        <view class="empty-state" wx:if="{{stations.length === 0 && !loading}}">
+            <text class="empty-text">暂无投放点</text>
+        </view>
+
+        <view class="loading-state" wx:if="{{loading}}">
+            <text class="loading-text">加载中...</text>
+        </view>
+    </view>
+</view>
