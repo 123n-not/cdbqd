@@ -1,0 +1,66 @@
+<view class="orders-container">
+    <view class="order-list">
+        <block wx:if="{{orders.length > 0}}">
+            <view
+                    class="order-card"
+                    wx:for="{{orders}}"
+                    wx:key="id"
+                    bindtap="onOrderTap"
+                    data-id="{{item.id}}"
+            >
+                <view class="order-header">
+                    <text class="order-id">订单号：{{item.id}}</text>
+                    <view class="order-status" style="color: {{getStatusColor(item.status)}}">
+                        {{getStatusText(item.status)}}
+                    </view>
+                </view>
+
+                <view class="order-body">
+                    <view class="order-info">
+                        <text class="info-label">充电宝编号：</text>
+                        <text class="info-value">{{item.powerBankSerialNumber}}</text>
+                    </view>
+
+                    <view class="order-info">
+                        <text class="info-label">投放点：</text>
+                        <text class="info-value">{{item.stationName}}</text>
+                    </view>
+
+                    <view class="order-info">
+                        <text class="info-label">借用时间：</text>
+                        <text class="info-value">{{item.rentTime}}</text>
+                    </view>
+
+                    <view class="order-info" wx:if="{{item.returnTime}}">
+                        <text class="info-label">归还时间：</text>
+                        <text class="info-value">{{item.returnTime}}</text>
+                    </view>
+
+                    <view class="order-info" wx:if="{{item.amount}}">
+                        <text class="info-label">费用：</text>
+                        <text class="info-value amount">¥{{item.amount}}</text>
+                    </view>
+                </view>
+
+                <view class="order-footer" wx:if="{{item.status === 1}}">
+                    <button
+                            class="return-btn"
+                            catchtap="onReturnOrder"
+                            data-id="{{item.id}}"
+                    >
+                        去归还
+                    </button>
+                </view>
+            </view>
+        </block>
+
+        <view class="empty-state" wx:if="{{orders.length === 0 && !loading}}">
+            <text class="empty-icon">📋</text>
+            <text class="empty-text">暂无订单</text>
+        </view>
+
+        <view class="loading-state" wx:if="{{loading}}">
+            <text class="loading-text">加载中...</text>
+        </view>
+    </view>
+</view>
