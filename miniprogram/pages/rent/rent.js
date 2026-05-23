@@ -79,7 +79,7 @@ Page({
 
             const res = await request.post('/order/rent', {
                 userId: userInfo.id,
-                powerBankId: this.data.powerBankId,
+                powerbankId: this.data.powerBankId,
                 stationId: this.data.stationId
             })
 
