@@ -58,8 +58,8 @@ Page({
             }
 
             if (res.code === 200) {
-                storage.setToken(res.data.token)
-                storage.setUserInfo(res.data.userInfo)
+                storage.setToken(res.data.id.toString())
+                storage.setUserInfo(res.data)
 
                 wx.showToast({
                     title: isLogin ? '登录成功' : '注册成功',

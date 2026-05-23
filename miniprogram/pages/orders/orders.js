@@ -1,5 +1,6 @@
 const request = require('../../utils/request')
 const util = require('../../utils/util')
+const storage = require('../../utils/storage')
 
 Page({
     data: {
@@ -24,7 +25,15 @@ Page({
         this.setData({ loading: true })
 
         try {
-            const res = await request.get('/order/list')
+            const userInfo = storage.getUserInfo()
+            if (!userInfo || !userInfo.id) {
+                wx.redirectTo({
+                    url: '/pages/login/login'
+                })
+                return
+            }
+
+            const res = await request.get('/order/list', { userId: userInfo.id })
 
             if (res.code === 200) {
                 this.setData({

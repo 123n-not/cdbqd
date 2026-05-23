@@ -1,4 +1,5 @@
 const request = require('../../utils/request')
+const storage = require('../../utils/storage')
 
 Page({
     data: {
@@ -68,7 +69,16 @@ Page({
         })
 
         try {
+            const userInfo = storage.getUserInfo()
+            if (!userInfo || !userInfo.id) {
+                wx.redirectTo({
+                    url: '/pages/login/login'
+                })
+                return
+            }
+
             const res = await request.post('/order/rent', {
+                userId: userInfo.id,
                 powerBankId: this.data.powerBankId,
                 stationId: this.data.stationId
             })
