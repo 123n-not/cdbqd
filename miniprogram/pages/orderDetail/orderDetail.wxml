@@ -1,6 +1,6 @@
 <view class="order-detail-container" wx:if="{{!loading && order}}">
     <view class="status-card">
-        <view class="status-icon">📦</view>
+        <view class="status-icon">🔋</view>
         <view class="status-text" style="color: {{getStatusColor(order.status)}}">
             {{getStatusText(order.status)}}
         </view>

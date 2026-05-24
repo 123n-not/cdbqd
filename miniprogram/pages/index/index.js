@@ -13,6 +13,10 @@ Page({
         this.loadStations()
     },
 
+    onShow() {
+        this.loadStations()
+    },
+
     onPullDownRefresh() {
         this.loadStations()
         wx.stopPullDownRefresh()

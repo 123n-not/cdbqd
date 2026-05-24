@@ -42,8 +42,9 @@ Page({
             })
 
             if (res.code === 200) {
+                const powerBanks = (res.data || []).filter(item => item.batteryLevel >= 20)
                 this.setData({
-                    powerBanks: res.data || [],
+                    powerBanks: powerBanks,
                     loading: false
                 })
             }
