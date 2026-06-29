@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.powerbank.dao.StationMapper">
+
+    <resultMap id="BaseResultMap" type="com.powerbank.entity.Station">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="address" property="address"/>
+        <result column="description" property="description"/>
+        <result column="total_slots" property="totalSlots"/>
+        <result column="available_slots" property="availableSlots"/>
+        <result column="latitude" property="latitude"/>
+        <result column="longitude" property="longitude"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="list" resultMap="BaseResultMap">
+        SELECT * FROM stations
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="findById" resultMap="BaseResultMap">
+        SELECT * FROM stations WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.powerbank.entity.Station" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO stations (name, address, description, total_slots, available_slots, latitude, longitude)
+        VALUES (#{name}, #{address}, #{description}, #{totalSlots}, #{availableSlots}, #{latitude}, #{longitude})
+    </insert>
+
+    <update id="update" parameterType="com.powerbank.entity.Station">
+        UPDATE stations
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="totalSlots != null">total_slots = #{totalSlots},</if>
+            <if test="availableSlots != null">available_slots = #{availableSlots},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM stations WHERE id = #{id}
+    </delete>
+
+    <update id="updateAvailableSlots">
+        UPDATE stations SET available_slots = available_slots + #{change} WHERE id = #{id}
+    </update>
+
+</mapper>

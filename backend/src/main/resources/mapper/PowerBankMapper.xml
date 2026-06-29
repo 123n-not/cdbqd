@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.powerbank.dao.PowerBankMapper">
+
+    <resultMap id="BaseResultMap" type="com.powerbank.entity.PowerBank">
+        <id column="id" property="id"/>
+        <result column="serial_number" property="serialNumber"/>
+        <result column="status" property="status"/>
+        <result column="station_id" property="stationId"/>
+        <result column="battery_level" property="batteryLevel"/>
+        <result column="version" property="version"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="list" resultMap="BaseResultMap">
+        SELECT * FROM powerbanks
+        <where>
+            <if test="stationId != null">
+                AND station_id = #{stationId}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="findById" resultMap="BaseResultMap">
+        SELECT * FROM powerbanks WHERE id = #{id}
+    </select>
+
+    <select id="findBySerialNumber" resultMap="BaseResultMap">
+        SELECT * FROM powerbanks WHERE serial_number = #{serialNumber}
+    </select>
+
+    <insert id="insert" parameterType="com.powerbank.entity.PowerBank" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO powerbanks (serial_number, status, station_id, battery_level)
+        VALUES (#{serialNumber}, #{status}, #{stationId}, #{batteryLevel})
+    </insert>
+
+    <update id="update" parameterType="com.powerbank.entity.PowerBank">
+        UPDATE powerbanks
+        <set>
+            <if test="status != null">status = #{status},</if>
+            <if test="stationId != null">station_id = #{stationId},</if>
+            <if test="batteryLevel != null">battery_level = #{batteryLevel},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE powerbanks SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <update id="updateStatusWithVersion">
+        UPDATE powerbanks 
+        SET status = #{status}, version = version + 1 
+        WHERE id = #{id} AND version = #{version}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM powerbanks WHERE id = #{id}
+    </delete>
+
+</mapper>

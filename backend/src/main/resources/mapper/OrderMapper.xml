@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.powerbank.dao.OrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.powerbank.entity.Order">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="powerbank_id" property="powerbankId"/>
+        <result column="station_id" property="stationId"/>
+        <result column="rent_time" property="rentTime"/>
+        <result column="return_time" property="returnTime"/>
+        <result column="amount" property="amount"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="powerBankSerialNumber" property="powerBankSerialNumber"/>
+        <result column="stationName" property="stationName"/>
+    </resultMap>
+
+    <select id="listByUserId" resultMap="BaseResultMap">
+        SELECT o.*, pb.serial_number as powerBankSerialNumber, s.name as stationName 
+        FROM orders o 
+        LEFT JOIN powerbanks pb ON o.powerbank_id = pb.id 
+        LEFT JOIN stations s ON o.station_id = s.id 
+        <where>
+            <if test="userId != null">
+                o.user_id = #{userId}
+            </if>
+        </where>
+        ORDER BY o.create_time DESC
+    </select>
+
+    <select id="findById" resultMap="BaseResultMap">
+        SELECT o.*, pb.serial_number as powerBankSerialNumber, s.name as stationName 
+        FROM orders o 
+        LEFT JOIN powerbanks pb ON o.powerbank_id = pb.id 
+        LEFT JOIN stations s ON o.station_id = s.id 
+        WHERE o.id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.powerbank.entity.Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO orders (user_id, powerbank_id, station_id, rent_time, return_time, amount, status, create_time)
+        VALUES (#{userId}, #{powerbankId}, #{stationId}, #{rentTime}, #{returnTime}, #{amount}, #{status}, NOW())
+    </insert>
+
+    <update id="update" parameterType="com.powerbank.entity.Order">
+        UPDATE orders
+        <set>
+            <if test="returnTime != null">return_time = #{returnTime},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE orders SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM orders WHERE id = #{id}
+    </delete>
+
+</mapper>
