@@ -29,9 +29,20 @@ Page({
                 this.setData({
                     powerBank: res.data
                 })
+            } else {
+                wx.showToast({
+                    title: res.message || '充电宝不存在',
+                    icon: 'none'
+                })
             }
         } catch (error) {
             console.error('加载充电宝详情失败:', error)
+            wx.showToast({
+                title: '加载失败，请检查ID是否正确',
+                icon: 'none'
+            })
+        } finally {
+            this.setData({ loading: false })
         }
     },
 
@@ -41,12 +52,21 @@ Page({
 
             if (res.code === 200) {
                 this.setData({
-                    station: res.data,
-                    loading: false
+                    station: res.data
+                })
+            } else {
+                wx.showToast({
+                    title: res.message || '站点不存在',
+                    icon: 'none'
                 })
             }
         } catch (error) {
             console.error('加载投放点详情失败:', error)
+            wx.showToast({
+                title: '加载失败，请检查ID是否正确',
+                icon: 'none'
+            })
+        } finally {
             this.setData({ loading: false })
         }
     },

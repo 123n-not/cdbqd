@@ -7,6 +7,9 @@
                 bindinput="onSearchInput"
                 bindconfirm="onSearch"
         />
+        <view class="scan-btn" bindtap="onScanCode" bindlongpress="onScanCodeLongPress">
+            <text class="scan-icon">📷</text>
+        </view>
         <view class="search-btn" bindtap="onSearch">搜索</view>
     </view>
 

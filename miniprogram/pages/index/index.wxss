@@ -23,6 +23,22 @@
     margin-right: 20rpx;
 }
 
+.scan-btn {
+    width: 72rpx;
+    height: 72rpx;
+    background: #4CAF50;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16rpx;
+}
+
+.scan-icon {
+    font-size: 36rpx;
+}
+
 .search-btn {
     width: 120rpx;
     height: 72rpx;

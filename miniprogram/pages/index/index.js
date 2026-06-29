@@ -103,5 +103,54 @@ Page({
         wx.navigateTo({
             url: `/pages/station/station?id=${stationId}`
         })
+    },
+
+    onScanCode() {
+        wx.scanCode({
+            scanType: ['qrCode'],
+            success: (res) => {
+                let result = decodeURIComponent(res.result)
+                result = result.replace('powerbankId', 'powerBankId')
+                if (result.indexOf('stationId') !== -1 && result.indexOf('powerBankId') !== -1) {
+                    wx.navigateTo({
+                        url: `/pages/rent/rent?${result}`
+                    })
+                } else {
+                    wx.showToast({
+                        title: '无效的二维码',
+                        icon: 'none'
+                    })
+                }
+            },
+            fail: (err) => {
+                console.log('扫码取消或失败:', err)
+            }
+        })
+    },
+
+    onScanCodeLongPress() {
+        wx.showModal({
+            title: '调试输入',
+            content: '请输入扫码内容（格式：stationId=2&powerbankId=5）',
+            editable: true,
+            placeholderText: 'stationId=2&powerbankId=5',
+            success: (res) => {
+                if (res.confirm && res.content) {
+                    let result = res.content.trim()
+                    result = result.replace('powerbankId', 'powerBankId')
+                    if (result.indexOf('stationId') !== -1 && result.indexOf('powerBankId') !== -1) {
+                        wx.navigateTo({
+                            url: `/pages/rent/rent?${result}`
+                        })
+                    } else {
+                        wx.showToast({
+                            title: '格式不对，请输入: stationId=X&powerbankId=Y',
+                            icon: 'none',
+                            duration: 3000
+                        })
+                    }
+                }
+            }
+        })
     }
 })
