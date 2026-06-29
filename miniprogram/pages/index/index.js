@@ -5,7 +5,11 @@ Page({
     data: {
         stations: [],
         keyword: '',
-        loading: false
+        loading: false,
+        mapLatitude: 39.9139,
+        mapLongitude: 116.3914,
+        mapScale: 14,
+        markers: []
     },
 
     onLoad() {
@@ -53,8 +57,11 @@ Page({
             const res = await request.get('/station/list', params)
 
             if (res.code === 200) {
+                const stations = res.data || []
+                const markers = this.buildMarkers(stations)
                 this.setData({
-                    stations: res.data || []
+                    stations: stations,
+                    markers: markers
                 })
             }
         } catch (error) {
@@ -62,6 +69,33 @@ Page({
         } finally {
             this.setData({ loading: false })
         }
+    },
+
+    buildMarkers(stations) {
+        return stations
+            .filter(item => item.latitude && item.longitude)
+            .map((item, index) => ({
+                id: item.id,
+                latitude: item.latitude,
+                longitude: item.longitude,
+                title: item.name,
+                width: 30,
+                height: 30,
+                callout: {
+                    content: item.name + '\n可用 ' + item.availableSlots + '/' + item.totalSlots,
+                    fontSize: 13,
+                    borderRadius: 8,
+                    padding: 8,
+                    display: 'ALWAYS'
+                }
+            }))
+    },
+
+    onMarkerTap(e) {
+        const stationId = e.detail.markerId
+        wx.navigateTo({
+            url: `/pages/station/station?id=${stationId}`
+        })
     },
 
     onStationTap(e) {

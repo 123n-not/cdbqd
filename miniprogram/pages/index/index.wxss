@@ -35,6 +35,17 @@
     font-size: 28rpx;
 }
 
+.map-section {
+    width: 100%;
+    height: 400rpx;
+    background: #e0e0e0;
+}
+
+.map-container {
+    width: 100%;
+    height: 100%;
+}
+
 .station-list {
     padding: 20rpx 30rpx;
 }

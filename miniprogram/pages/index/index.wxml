@@ -10,6 +10,18 @@
         <view class="search-btn" bindtap="onSearch">搜索</view>
     </view>
 
+    <view class="map-section">
+        <map
+                style="width: 100%; height: 100%;"
+                latitude="{{mapLatitude}}"
+                longitude="{{mapLongitude}}"
+                scale="{{mapScale}}"
+                markers="{{markers}}"
+                bindmarkertap="onMarkerTap"
+        >
+        </map>
+    </view>
+
     <view class="station-list">
         <block wx:if="{{stations.length > 0}}">
             <view
