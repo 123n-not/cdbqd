@@ -85,6 +85,22 @@
     border-top: 1rpx solid #f0f0f0;
 }
 
+.fee-display {
+    text-align: center;
+    padding: 20rpx 0;
+}
+
+.fee-label {
+    font-size: 28rpx;
+    color: #666;
+}
+
+.fee-amount {
+    font-size: 48rpx;
+    font-weight: bold;
+    color: #FF5722;
+}
+
 .button-group {
     position: fixed;
     bottom: 0;

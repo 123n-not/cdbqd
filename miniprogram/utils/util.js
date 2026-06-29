@@ -74,6 +74,21 @@ function getPowerBankStatusText(status) {
     return statusMap[status] || '未知'
 }
 
+function calcRunningFee(rentTimeStr) {
+    if (!rentTimeStr) return { duration: '--', fee: 0 }
+    const rentTime = new Date(rentTimeStr.replace(/-/g, '/')).getTime()
+    const now = Date.now()
+    const diffMs = now - rentTime
+    if (diffMs < 0) return { duration: '--', fee: 0 }
+    const totalMinutes = Math.floor(diffMs / 60000)
+    const hours = Math.floor(totalMinutes / 60)
+    const minutes = totalMinutes % 60
+    const duration = hours + '小时' + minutes + '分钟'
+    const feeHours = Math.ceil(diffMs / 3600000)
+    const fee = feeHours * 1
+    return { duration, fee }
+}
+
 module.exports = {
     formatTime,
     formatDate,
@@ -81,5 +96,6 @@ module.exports = {
     formatTimeAgo,
     getOrderStatusText,
     getOrderStatusColor,
-    getPowerBankStatusText
+    getPowerBankStatusText,
+    calcRunningFee
 }

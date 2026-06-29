@@ -36,7 +36,17 @@
                         <text class="info-value">{{item.returnTime}}</text>
                     </view>
 
-                    <view class="order-info" wx:if="{{item.amount}}">
+                    <view class="order-info" wx:if="{{item.status === 1}}">
+                        <text class="info-label">已用时长：</text>
+                        <text class="info-value running-duration">{{item.runningDuration || '计算中...'}}</text>
+                    </view>
+
+                    <view class="order-info" wx:if="{{item.status === 1}}">
+                        <text class="info-label">当前费用：</text>
+                        <text class="info-value running-fee">¥{{item.runningFee || 0}}</text>
+                    </view>
+
+                    <view class="order-info" wx:if="{{item.status === 2 && item.amount}}">
                         <text class="info-label">费用：</text>
                         <text class="info-value amount">¥{{item.amount}}</text>
                     </view>

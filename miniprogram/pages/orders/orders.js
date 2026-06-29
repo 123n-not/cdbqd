@@ -14,6 +14,15 @@ Page({
 
     onShow() {
         this.loadOrders()
+        this.startFeeTimer()
+    },
+
+    onHide() {
+        this.stopFeeTimer()
+    },
+
+    onUnload() {
+        this.stopFeeTimer()
     },
 
     onPullDownRefresh() {
@@ -40,11 +49,45 @@ Page({
                     orders: res.data || [],
                     loading: false
                 })
+                this.startFeeTimer()
             }
         } catch (error) {
             console.error('加载订单列表失败:', error)
             this.setData({ loading: false })
         }
+    },
+
+    startFeeTimer() {
+        this.stopFeeTimer()
+        const hasActive = this.data.orders.some(o => o.status === 1)
+        if (hasActive) {
+            this.updateRunningFees()
+            this.feeTimer = setInterval(() => {
+                this.updateRunningFees()
+            }, 1000)
+        }
+    },
+
+    stopFeeTimer() {
+        if (this.feeTimer) {
+            clearInterval(this.feeTimer)
+            this.feeTimer = null
+        }
+    },
+
+    updateRunningFees() {
+        const orders = this.data.orders.map(order => {
+            if (order.status === 1) {
+                const result = util.calcRunningFee(order.rentTime)
+                return {
+                    ...order,
+                    runningDuration: result.duration,
+                    runningFee: result.fee
+                }
+            }
+            return order
+        })
+        this.setData({ orders })
     },
 
     onOrderTap(e) {

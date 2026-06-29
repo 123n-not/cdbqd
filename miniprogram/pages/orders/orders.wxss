@@ -68,6 +68,18 @@
     color: #4CAF50;
 }
 
+.info-value.running-duration {
+    font-size: 28rpx;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.info-value.running-fee {
+    font-size: 32rpx;
+    font-weight: bold;
+    color: #FF5722;
+}
+
 .order-footer {
     padding-top: 20rpx;
     border-top: 1rpx solid #f0f0f0;

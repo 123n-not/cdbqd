@@ -41,14 +41,28 @@
     </view>
 
     <view class="info-card" wx:if="{{order.status === 1}}">
-        <view class="card-title">使用时长</view>
+        <view class="card-title">实时计费</view>
 
         <view class="duration-display">
-            <text class="duration-text">{{order.duration || '计算中...'}}</text>
+            <text class="duration-text">{{runningDuration}}</text>
+        </view>
+
+        <view class="fee-display">
+            <text class="fee-label">当前费用：</text>
+            <text class="fee-amount">¥{{runningFee}}</text>
         </view>
 
         <view class="tips-text">
-            <text>费用将根据实际使用时长计算</text>
+            <text>1元/小时，不足1小时按1小时计算</text>
+        </view>
+    </view>
+
+    <view class="info-card" wx:if="{{order.status === 2 && order.amount}}">
+        <view class="card-title">费用明细</view>
+
+        <view class="fee-display">
+            <text class="fee-label">实际费用：</text>
+            <text class="fee-amount">¥{{order.amount}}</text>
         </view>
     </view>
 
