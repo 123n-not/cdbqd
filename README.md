@@ -37,3 +37,7 @@
 1. 使用 IDEA 导入 backend 目录
 2. 配置 jdbc.properties 中的数据库连接信息
 3. 运行 Tomcat 服务器
+![img.png](img.png)
+![img_1.png](img_1.png)
+![img_2.png](img_2.png)
+![img_3.png](img_3.png)
