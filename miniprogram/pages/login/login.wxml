@@ -1,6 +1,6 @@
 <view class="login-container">
     <view class="login-header">
-        <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+        <image class="logo" src="/images/logo2.png" mode="aspectFit"></image>
         <text class="title">{{isLogin ? '登录' : '注册'}}</text>
         <text class="subtitle">共享充电宝系统</text>
     </view>
