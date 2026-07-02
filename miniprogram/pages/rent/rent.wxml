@@ -1,51 +1,105 @@
-<view class="rent-container" wx:if="{{!loading && powerBank && station}}">
-    <view class="info-card">
-        <view class="card-title">充电宝信息</view>
-
-        <view class="info-row">
-            <text class="info-label">编号：</text>
-            <text class="info-value">{{powerBank.serialNumber}}</text>
-        </view>
-
-        <view class="info-row">
-            <text class="info-label">电量：</text>
-            <text class="info-value highlight">{{powerBank.batteryLevel}}%</text>
-        </view>
-
-        <view class="info-row">
-            <text class="info-label">状态：</text>
-            <text class="info-value status">可借用</text>
-        </view>
-    </view>
-
-    <view class="info-card">
-        <view class="card-title">投放点信息</view>
-
-        <view class="info-row">
-            <text class="info-label">名称：</text>
-            <text class="info-value">{{station.name}}</text>
-        </view>
-
-        <view class="info-row">
-            <text class="info-label">地址：</text>
-            <text class="info-value">{{station.address}}</text>
-        </view>
-    </view>
-
-    <view class="tips-card">
-        <view class="tips-title">💡 温馨提示</view>
-        <view class="tips-item">• 借用后请妥善保管充电宝</view>
-        <view class="tips-item">• 使用完毕请及时归还</view>
-        <view class="tips-item">• 归还时请选择任意投放点</view>
-        <view class="tips-item">• 超时未归还将产生额外费用</view>
-    </view>
-
-    <view class="button-group">
-        <button class="cancel-btn" bindtap="onCancel">取消</button>
-        <button class="confirm-btn" bindtap="onConfirmRent">确认借用</button>
-    </view>
-</view>
-
-<view class="loading-container" wx:if="{{loading}}">
+<view class="page-rent">
+  <!-- 加载中 -->
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <text class="loading-icon pulse">🔋</text>
     <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 内容 -->
+  <block wx:if="{{!loading && powerBank && station}}">
+    <!-- 顶部确认卡片 -->
+    <view class="rent-confirm-card">
+      <view class="confirm-icon-wrap">
+        <text class="confirm-icon">⚡</text>
+      </view>
+      <text class="confirm-title">确认借用充电宝</text>
+      <text class="confirm-desc">请确认以下信息后点击借用</text>
+    </view>
+
+    <!-- 充电宝信息 -->
+    <view class="rent-card">
+      <view class="rent-card-header">
+        <text class="rent-card-icon">🔋</text>
+        <text class="rent-card-title">充电宝信息</text>
+      </view>
+      <view class="rent-card-body">
+        <!-- 电池可视化 -->
+        <view class="battery-visual">
+          <view class="battery-circle {{powerBank.batteryLevel >= 80 ? 'high' : powerBank.batteryLevel >= 50 ? 'mid' : 'low'}}">
+            <text class="battery-num">{{powerBank.batteryLevel}}</text>
+            <text class="battery-unit">%</text>
+          </view>
+          <view class="battery-tag badge {{powerBank.batteryLevel >= 80 ? 'badge-success' : powerBank.batteryLevel >= 50 ? 'badge-warning' : 'badge-danger'}}">
+            {{powerBank.batteryLevel >= 80 ? '电量充足' : powerBank.batteryLevel >= 50 ? '电量适中' : '电量偏低'}}
+          </view>
+        </view>
+        <view class="rent-info-list">
+          <view class="rent-info-row">
+            <text class="rent-info-label">编号</text>
+            <text class="rent-info-value">{{powerBank.serialNumber}}</text>
+          </view>
+          <view class="rent-info-row">
+            <text class="rent-info-label">状态</text>
+            <view class="badge badge-success">可借用</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 投放点信息 -->
+    <view class="rent-card">
+      <view class="rent-card-header">
+        <text class="rent-card-icon">📍</text>
+        <text class="rent-card-title">投放点信息</text>
+      </view>
+      <view class="rent-card-body">
+        <view class="rent-info-list">
+          <view class="rent-info-row">
+            <text class="rent-info-label">名称</text>
+            <text class="rent-info-value">{{station.name}}</text>
+          </view>
+          <view class="rent-info-row">
+            <text class="rent-info-label">地址</text>
+            <text class="rent-info-value">{{station.address}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 费用说明 -->
+    <view class="price-card">
+      <view class="price-header">
+        <text class="price-icon">💰</text>
+        <text class="price-title">费用说明</text>
+      </view>
+      <view class="price-list">
+        <view class="price-row">
+          <text>计费标准</text>
+          <text class="text-bold">1 元 / 小时</text>
+        </view>
+        <view class="price-row">
+          <text>不足 1 小时</text>
+          <text>按 1 小时计算</text>
+        </view>
+        <view class="price-row">
+          <text>归还方式</text>
+          <text>任意投放点归还</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 温馨提示 -->
+    <view class="tips-banner">
+      <text class="tips-icon">💡</text>
+      <text class="tips-text">借用后请妥善保管，使用完毕后请及时归还至任意投放点</text>
+    </view>
+  </block>
+
+  <!-- 底部按钮 -->
+  <view class="fixed-bottom" wx:if="{{!loading && powerBank && station}}">
+    <view class="btn-row">
+      <button class="btn btn-outline flex-1" bindtap="onCancel">取 消</button>
+      <button class="btn btn-primary flex-1" bindtap="onConfirmRent">确认借用</button>
+    </view>
+  </view>
 </view>

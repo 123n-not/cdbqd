@@ -1,37 +1,124 @@
-<view class="user-container">
-    <view class="user-header">
-        <view class="avatar">
-            <text class="avatar-text">{{userInfo ? userInfo.nickname ? userInfo.nickname.charAt(0) : userInfo.username.charAt(0) : 'U'}}</text>
+<view class="page-user">
+  <!-- 个人头部 -->
+  <view class="user-hero">
+    <view class="hero-bg-decor"></view>
+    <view class="hero-main">
+      <view class="avatar-wrap">
+        <view class="avatar-circle">
+          <text class="avatar-letter">{{userInfo ? userInfo.avatarLetter : 'U'}}</text>
         </view>
-        <view class="user-info">
-            <text class="username">{{userInfo ? userInfo.nickname || userInfo.username : '未登录'}}</text>
-            <text class="user-phone" wx:if="{{userInfo && userInfo.phone}}">{{userInfo.phone}}</text>
-        </view>
+        <view class="avatar-badge">✓</view>
+      </view>
+      <text class="user-name">{{userInfo ? (userInfo.nickname || userInfo.username) : '未登录'}}</text>
+      <text class="user-phone" wx:if="{{userInfo && userInfo.phone}}">{{userInfo.phone}}</text>
+      <view class="user-id-tag" wx:if="{{userInfo}}">
+        <text>ID: {{userInfo.id}}</text>
+      </view>
     </view>
 
-    <view class="menu-section">
-        <view class="menu-item" bindtap="onOrdersTap">
-            <view class="menu-left">
-                <text class="menu-icon">📋</text>
-                <text class="menu-text">我的订单</text>
-            </view>
-            <text class="menu-arrow">›</text>
+    <!-- 统计 -->
+    <view class="hero-stats" wx:if="{{userInfo}}">
+      <view class="hero-stat-item" bindtap="onOrdersTap">
+        <text class="hero-stat-num">{{stats.totalOrders || 0}}</text>
+        <text class="hero-stat-label">总订单</text>
+      </view>
+      <view class="hero-stat-divider"></view>
+      <view class="hero-stat-item">
+        <text class="hero-stat-num">{{stats.activeOrders || 0}}</text>
+        <text class="hero-stat-label">使用中</text>
+      </view>
+      <view class="hero-stat-divider"></view>
+      <view class="hero-stat-item">
+        <text class="hero-stat-num">¥{{stats.totalSpent || 0}}</text>
+        <text class="hero-stat-label">累计消费</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 菜单区 -->
+  <view class="menu-section">
+    <view class="menu-group">
+      <view class="menu-item" bindtap="onOrdersTap">
+        <view class="menu-left">
+          <view class="menu-icon-wrap icon-green">
+            <text>📋</text>
+          </view>
+          <view class="menu-text-wrap">
+            <text class="menu-label">我的订单</text>
+            <text class="menu-desc">查看所有租借记录</text>
+          </view>
         </view>
-
-        <view class="menu-item" bindtap="onAboutTap">
-            <view class="menu-left">
-                <text class="menu-icon">ℹ️</text>
-                <text class="menu-text">关于我们</text>
-            </view>
-            <text class="menu-arrow">›</text>
+        <view class="menu-right">
+          <view class="badge badge-success" wx:if="{{stats.activeOrders > 0}}">{{stats.activeOrders}} 进行中</view>
+          <text class="menu-arrow">→</text>
         </view>
+      </view>
+
+      <view class="menu-item" bindtap="onWalletTap">
+        <view class="menu-left">
+          <view class="menu-icon-wrap icon-orange">
+            <text>💰</text>
+          </view>
+          <view class="menu-text-wrap">
+            <text class="menu-label">我的钱包</text>
+            <text class="menu-desc">余额、优惠券</text>
+          </view>
+        </view>
+        <text class="menu-arrow">→</text>
+      </view>
+
+      <view class="menu-item" bindtap="onFavoritesTap">
+        <view class="menu-left">
+          <view class="menu-icon-wrap icon-blue">
+            <text>⭐</text>
+          </view>
+          <view class="menu-text-wrap">
+            <text class="menu-label">收藏的投放点</text>
+            <text class="menu-desc">快速找到常用站点</text>
+          </view>
+        </view>
+        <text class="menu-arrow">→</text>
+      </view>
     </view>
 
-    <view class="logout-section">
-        <button class="logout-btn" bindtap="onLogout">退出登录</button>
-    </view>
+    <view class="menu-group">
+      <view class="menu-item" bindtap="onHelpTap">
+        <view class="menu-left">
+          <view class="menu-icon-wrap icon-purple">
+            <text>❓</text>
+          </view>
+          <view class="menu-text-wrap">
+            <text class="menu-label">帮助中心</text>
+            <text class="menu-desc">使用指南与常见问题</text>
+          </view>
+        </view>
+        <text class="menu-arrow">→</text>
+      </view>
 
-    <view class="footer">
-        <text class="footer-text">共享充电宝系统 v1.0</text>
+      <view class="menu-item" bindtap="onAboutTap">
+        <view class="menu-left">
+          <view class="menu-icon-wrap icon-gray">
+            <text>ℹ️</text>
+          </view>
+          <view class="menu-text-wrap">
+            <text class="menu-label">关于我们</text>
+            <text class="menu-desc">版本信息与联系方式</text>
+          </view>
+        </view>
+        <text class="menu-arrow">→</text>
+      </view>
     </view>
+  </view>
+
+  <!-- 退出 -->
+  <view class="logout-area">
+    <button class="btn btn-danger" bindtap="onLogout">退出登录</button>
+  </view>
+
+  <!-- 底部 -->
+  <view class="user-footer">
+    <text>共享充电宝 v1.0</text>
+    <text class="footer-divider">·</text>
+    <text>用心服务每一次充电</text>
+  </view>
 </view>

@@ -1,76 +1,120 @@
-<view class="orders-container">
-    <view class="order-list">
-        <block wx:if="{{orders.length > 0}}">
-            <view
-                    class="order-card"
-                    wx:for="{{orders}}"
-                    wx:key="id"
-                    bindtap="onOrderTap"
-                    data-id="{{item.id}}"
-            >
-                <view class="order-header">
-                    <text class="order-id">订单号：{{item.id}}</text>
-                    <view class="order-status" style="color: {{getStatusColor(item.status)}}">
-                        {{getStatusText(item.status)}}
-                    </view>
-                </view>
+<view class="page-orders">
+  <!-- 筛选标签 -->
+  <view class="filter-tabs">
+    <view
+      class="filter-tab {{activeTab === 'all' ? 'active' : ''}}"
+      bindtap="onFilterTap"
+      data-tab="all"
+    >全部</view>
+    <view
+      class="filter-tab {{activeTab === 'renting' ? 'active' : ''}}"
+      bindtap="onFilterTap"
+      data-tab="renting"
+    >使用中</view>
+    <view
+      class="filter-tab {{activeTab === 'returned' ? 'active' : ''}}"
+      bindtap="onFilterTap"
+      data-tab="returned"
+    >已归还</view>
+    <view
+      class="filter-tab {{activeTab === 'completed' ? 'active' : ''}}"
+      bindtap="onFilterTap"
+      data-tab="completed"
+    >已完成</view>
+  </view>
 
-                <view class="order-body">
-                    <view class="order-info">
-                        <text class="info-label">充电宝编号：</text>
-                        <text class="info-value">{{item.powerBankSerialNumber}}</text>
-                    </view>
-
-                    <view class="order-info">
-                        <text class="info-label">投放点：</text>
-                        <text class="info-value">{{item.stationName}}</text>
-                    </view>
-
-                    <view class="order-info">
-                        <text class="info-label">借用时间：</text>
-                        <text class="info-value">{{item.rentTime}}</text>
-                    </view>
-
-                    <view class="order-info" wx:if="{{item.returnTime}}">
-                        <text class="info-label">归还时间：</text>
-                        <text class="info-value">{{item.returnTime}}</text>
-                    </view>
-
-                    <view class="order-info" wx:if="{{item.status === 1}}">
-                        <text class="info-label">已用时长：</text>
-                        <text class="info-value running-duration">{{item.runningDuration || '计算中...'}}</text>
-                    </view>
-
-                    <view class="order-info" wx:if="{{item.status === 1}}">
-                        <text class="info-label">当前费用：</text>
-                        <text class="info-value running-fee">¥{{item.runningFee || 0}}</text>
-                    </view>
-
-                    <view class="order-info" wx:if="{{item.status === 2 && item.amount}}">
-                        <text class="info-label">费用：</text>
-                        <text class="info-value amount">¥{{item.amount}}</text>
-                    </view>
-                </view>
-
-                <view class="order-footer" wx:if="{{item.status === 1}}">
-                    <button
-                            class="return-btn"
-                            catchtap="onReturnOrder"
-                            data-id="{{item.id}}"
-                    >
-                        去归还
-                    </button>
-                </view>
-            </view>
-        </block>
-
-        <view class="empty-state" wx:if="{{orders.length === 0 && !loading}}">
-            <text class="empty-icon">📋</text>
-            <text class="empty-text">暂无订单</text>
-        </view>
-
-        <view class="loading-state" wx:if="{{loading}}">
-            <text class="loading-text">加载中...</text>
-        </view>
+  <!-- 骨架屏 -->
+  <view class="order-list" wx:if="{{loading}}">
+    <view class="order-skeleton" wx:for="{{[1,2,3]}}" wx:key="*this">
+      <view class="flex-between mb-20">
+        <view class="skeleton" style="height: 28rpx; width: 40%;"></view>
+        <view class="skeleton" style="height: 28rpx; width: 80rpx; border-radius: 20rpx;"></view>
+      </view>
+      <view class="skeleton skeleton-line"></view>
+      <view class="skeleton skeleton-line short"></view>
+      <view class="skeleton skeleton-line" style="width: 45%;"></view>
     </view>
+  </view>
+
+  <!-- 内容 -->
+  <block wx:if="{{!loading}}">
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{filteredOrders.length === 0}}">
+      <text class="empty-icon-large">📋</text>
+      <text class="empty-title">暂无订单</text>
+      <text class="empty-desc">{{activeTab === 'all' ? '你还没有任何订单记录' : '当前筛选条件下暂无订单'}}</text>
+      <view class="empty-action" wx:if="{{activeTab !== 'all'}}">
+        <text class="link-text" bindtap="onFilterTap" data-tab="all">查看全部订单 →</text>
+      </view>
+    </view>
+
+    <!-- 订单列表 -->
+    <view class="order-list" wx:if="{{filteredOrders.length > 0}}">
+      <view
+        class="order-card fade-in-up"
+        wx:for="{{filteredOrders}}"
+        wx:key="id"
+        bindtap="onOrderTap"
+        data-id="{{item.id}}"
+        style="animation-delay: {{index * 0.05}}s;"
+      >
+        <!-- 左侧状态条 -->
+        <view class="order-status-bar" style="background: {{getStatusColor(item.status)}};"></view>
+
+        <!-- 内容 -->
+        <view class="order-body">
+          <view class="order-top">
+            <text class="order-serial">#{{item.id}}</text>
+            <view class="badge" style="background: {{getStatusBg(item.status)}}; color: {{getStatusColor(item.status)}};">
+              {{getStatusText(item.status)}}
+            </view>
+          </view>
+
+          <view class="order-info-grid">
+            <view class="order-info-item">
+              <text class="info-label">充电宝</text>
+              <text class="info-value">{{item.powerBankSerialNumber}}</text>
+            </view>
+            <view class="order-info-item">
+              <text class="info-label">投放点</text>
+              <text class="info-value single-line">{{item.stationName}}</text>
+            </view>
+            <view class="order-info-item full-width">
+              <text class="info-label">借用</text>
+              <text class="info-value">{{item.rentTime}}</text>
+            </view>
+            <view class="order-info-item full-width" wx:if="{{item.returnTime}}">
+              <text class="info-label">归还</text>
+              <text class="info-value">{{item.returnTime}}</text>
+            </view>
+          </view>
+
+          <!-- 实时计费 -->
+          <view class="order-fee-area" wx:if="{{item.status === 1}}">
+            <view class="fee-running">
+              <view class="dot dot-success pulse"></view>
+              <text class="fee-duration">{{item.runningDuration || '计算中...'}}</text>
+            </view>
+            <view class="fee-amount-fresh">
+              <text class="fee-symbol">¥</text>
+              <text class="fee-number">{{item.runningFee || 0}}</text>
+            </view>
+          </view>
+
+          <!-- 已结算费用 -->
+          <view class="order-fee-area settled" wx:if="{{item.status === 2 && item.amount}}">
+            <text class="settled-label">费用</text>
+            <text class="settled-amount">¥{{item.amount}}</text>
+          </view>
+
+          <!-- 归还按钮 -->
+          <view class="order-action" wx:if="{{item.status === 1}}">
+            <button class="btn btn-primary btn-sm" catchtap="onReturnOrder" data-id="{{item.id}}">
+              去归还
+            </button>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
 </view>

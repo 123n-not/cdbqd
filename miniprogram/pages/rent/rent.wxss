@@ -1,124 +1,254 @@
-.rent-container {
-    min-height: 100vh;
-    background: #f5f5f5;
-    padding: 20rpx 30rpx 120rpx;
-    box-sizing: border-box;
+/* ============================================
+   确认借用页
+   ============================================ */
+
+.page-rent {
+  min-height: 100vh;
+  background: var(--bg-page);
+  padding: 0 24rpx 140rpx;
 }
 
-.info-card {
-    background: #fff;
-    border-radius: 16rpx;
-    padding: 30rpx;
-    margin-bottom: 20rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+/* --- 加载 --- */
+.loading-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 24rpx;
 }
 
-.card-title {
-    font-size: 32rpx;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 24rpx;
-    padding-bottom: 16rpx;
-    border-bottom: 1rpx solid #f0f0f0;
-}
-
-.info-row {
-    display: flex;
-    margin-bottom: 20rpx;
-    align-items: center;
-}
-
-.info-label {
-    font-size: 28rpx;
-    color: #666;
-    min-width: 120rpx;
-}
-
-.info-value {
-    font-size: 28rpx;
-    color: #333;
-    flex: 1;
-}
-
-.info-value.highlight {
-    color: #4CAF50;
-    font-weight: bold;
-    font-size: 32rpx;
-}
-
-.info-value.status {
-    color: #4CAF50;
-    font-weight: 500;
-}
-
-.tips-card {
-    background: #fff9e6;
-    border-radius: 16rpx;
-    padding: 30rpx;
-    margin-bottom: 20rpx;
-    border: 1rpx solid #ffe58f;
-}
-
-.tips-title {
-    font-size: 28rpx;
-    font-weight: bold;
-    color: #faad14;
-    margin-bottom: 16rpx;
-}
-
-.tips-item {
-    font-size: 26rpx;
-    color: #666;
-    line-height: 1.8;
-    margin-bottom: 8rpx;
-}
-
-.button-group {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    gap: 20rpx;
-    padding: 20rpx 30rpx;
-    background: #fff;
-    box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.08);
-}
-
-.cancel-btn,
-.confirm-btn {
-    flex: 1;
-    height: 88rpx;
-    border-radius: 12rpx;
-    font-size: 32rpx;
-    font-weight: bold;
-    border: none;
-}
-
-.cancel-btn {
-    background: #f5f5f5;
-    color: #666;
-}
-
-.confirm-btn {
-    background: #4CAF50;
-    color: #fff;
-}
-
-.cancel-btn::after,
-.confirm-btn::after {
-    border: none;
-}
-
-.loading-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background: #f5f5f5;
+.loading-icon {
+  font-size: 100rpx;
 }
 
 .loading-text {
-    font-size: 28rpx;
-    color: #999;
+  font-size: 28rpx;
+  color: var(--text-hint);
+}
+
+/* --- 顶部确认卡片 --- */
+.rent-confirm-card {
+  text-align: center;
+  padding: 40rpx 0 30rpx;
+}
+
+.confirm-icon-wrap {
+  width: 100rpx;
+  height: 100rpx;
+  background: linear-gradient(135deg, #4CAF50, #43A047);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20rpx;
+  box-shadow: 0 8rpx 24rpx rgba(76,175,80,0.3);
+}
+
+.confirm-icon {
+  font-size: 48rpx;
+}
+
+.confirm-title {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.confirm-desc {
+  display: block;
+  font-size: 26rpx;
+  color: var(--text-hint);
+  margin-top: 8rpx;
+}
+
+/* --- 信息卡片 --- */
+.rent-card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  margin-bottom: 18rpx;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.rent-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 24rpx 28rpx;
+  background: #fafbfc;
+  border-bottom: 1rpx solid var(--border);
+}
+
+.rent-card-icon {
+  font-size: 30rpx;
+}
+
+.rent-card-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.rent-card-body {
+  padding: 24rpx 28rpx;
+}
+
+/* 电池可视化 */
+.battery-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx 0 24rpx;
+  gap: 14rpx;
+}
+
+.battery-circle {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 6rpx solid;
+}
+
+.battery-circle.high {
+  background: #E8F5E9;
+  border-color: #4CAF50;
+}
+
+.battery-circle.mid {
+  background: #FFF8E1;
+  border-color: #FF9800;
+}
+
+.battery-circle.low {
+  background: #FFEBEE;
+  border-color: #FF5252;
+}
+
+.battery-num {
+  font-size: 52rpx;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.battery-circle.high .battery-num { color: #4CAF50; }
+.battery-circle.mid  .battery-num { color: #FF9800; }
+.battery-circle.low  .battery-num { color: #FF5252; }
+
+.battery-unit {
+  font-size: 24rpx;
+  font-weight: 600;
+  opacity: 0.6;
+}
+
+.battery-tag {
+  font-size: 24rpx;
+}
+
+/* 信息列表 */
+.rent-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.rent-info-row {
+  display: flex;
+  align-items: center;
+}
+
+.rent-info-label {
+  font-size: 26rpx;
+  color: var(--text-hint);
+  min-width: 80rpx;
+}
+
+.rent-info-value {
+  font-size: 26rpx;
+  color: var(--text-primary);
+  font-weight: 500;
+  flex: 1;
+}
+
+/* --- 费用卡片 --- */
+.price-card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  margin-bottom: 18rpx;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.price-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 24rpx 28rpx;
+  background: #fafbfc;
+  border-bottom: 1rpx solid var(--border);
+}
+
+.price-icon {
+  font-size: 30rpx;
+}
+
+.price-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.price-list {
+  padding: 20rpx 28rpx;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14rpx 0;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  border-bottom: 1rpx solid var(--border);
+}
+
+.price-row:last-child {
+  border-bottom: none;
+}
+
+/* --- 温馨提示 --- */
+.tips-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  padding: 20rpx 24rpx;
+  background: #FFF8E1;
+  border-radius: var(--radius-md);
+  border: 1rpx solid #FFE082;
+}
+
+.tips-icon {
+  font-size: 28rpx;
+  flex-shrink: 0;
+}
+
+.tips-text {
+  font-size: 24rpx;
+  color: #8D6E00;
+  line-height: 1.6;
+}
+
+/* --- 底部按钮 --- */
+.btn-row {
+  display: flex;
+  gap: 20rpx;
+}
+
+.btn-row .btn {
+  height: 92rpx;
+  font-size: 30rpx;
 }

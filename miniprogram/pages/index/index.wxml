@@ -1,68 +1,152 @@
-<view class="index-container">
-    <view class="search-bar">
-        <input
-                class="search-input"
-                placeholder="搜索投放点名称或地址"
-                value="{{keyword}}"
-                bindinput="onSearchInput"
-                bindconfirm="onSearch"
-        />
-        <view class="scan-btn" bindtap="onScanCode" bindlongpress="onScanCodeLongPress">
-            <text class="scan-icon">📷</text>
+<view class="page-index">
+  <!-- 头部横幅 -->
+  <view class="hero-banner">
+    <view class="hero-content">
+      <text class="hero-title">随时随地</text>
+      <text class="hero-subtitle">扫码即借，轻松充电</text>
+    </view>
+    <view class="hero-icon">🔋</view>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-section">
+    <view class="search-box">
+      <view class="search-icon">🔍</view>
+      <input
+        class="search-input"
+        placeholder="搜索投放点名称或地址"
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearch"
+      />
+      <view class="search-clear" wx:if="{{keyword}}" bindtap="onClearSearch">
+        <text>✕</text>
+      </view>
+    </view>
+    <view class="scan-btn" bindtap="onScanCode" bindlongpress="onScanCodeLongPress">
+      <text class="scan-icon">📷</text>
+    </view>
+  </view>
+
+  <!-- 快捷标签 -->
+  <view class="quick-tags">
+    <view class="quick-tag {{tag === 'nearby' ? 'active' : ''}}" bindtap="onQuickTag" data-tag="nearby">
+      <text class="tag-icon">📍</text>
+      <text>附近</text>
+    </view>
+    <view class="quick-tag {{tag === 'all' ? 'active' : ''}}" bindtap="onQuickTag" data-tag="all">
+      <text class="tag-icon">🏢</text>
+      <text>全部</text>
+    </view>
+    <view class="quick-tag {{tag === 'highBattery' ? 'active' : ''}}" bindtap="onQuickTag" data-tag="highBattery">
+      <text class="tag-icon">⚡</text>
+      <text>满电优先</text>
+    </view>
+  </view>
+
+  <!-- 地图 -->
+  <view class="map-section">
+    <map
+      style="width: 100%; height: 100%;"
+      latitude="{{mapLatitude}}"
+      longitude="{{mapLongitude}}"
+      scale="{{mapScale}}"
+      markers="{{markers}}"
+      bindmarkertap="onMarkerTap"
+      show-location="{{true}}"
+    />
+    <!-- 定位按钮 -->
+    <view class="map-locate-btn" bindtap="onLocateMe">
+      <text>📍</text>
+    </view>
+    <!-- 地图统计浮层 -->
+    <view class="map-stats" wx:if="{{stations.length > 0}}">
+      <text class="map-stats-text">附近 {{stations.length}} 个投放点</text>
+    </view>
+  </view>
+
+  <!-- 投放点列表 -->
+  <view class="station-section">
+    <view class="section-header">
+      <text class="section-title">附近投放点</text>
+      <text class="section-count">{{stations.length}} 个</text>
+    </view>
+
+    <!-- 骨架屏 -->
+    <view wx:if="{{loading}}">
+      <view class="station-skeleton" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="skeleton" style="height: 36rpx; width: 60%; margin-bottom: 16rpx;"></view>
+        <view class="skeleton skeleton-line short"></view>
+        <view class="skeleton skeleton-line" style="width: 80%;"></view>
+        <view class="flex-between mt-20">
+          <view class="skeleton" style="height: 28rpx; width: 120rpx;"></view>
+          <view class="skeleton" style="height: 28rpx; width: 80rpx;"></view>
         </view>
-        <view class="search-btn" bindtap="onSearch">搜索</view>
+      </view>
     </view>
 
-    <view class="map-section">
-        <map
-                style="width: 100%; height: 100%;"
-                latitude="{{mapLatitude}}"
-                longitude="{{mapLongitude}}"
-                scale="{{mapScale}}"
-                markers="{{markers}}"
-                bindmarkertap="onMarkerTap"
-        >
-        </map>
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{stations.length === 0 && !loading}}">
+      <text class="empty-icon-large">🗺️</text>
+      <text class="empty-title">暂无投放点</text>
+      <text class="empty-desc">附近还没有充电宝投放点，换个区域试试</text>
     </view>
 
-    <view class="station-list">
-        <block wx:if="{{stations.length > 0}}">
-            <view
-                    class="station-card"
-                    wx:for="{{stations}}"
-                    wx:key="id"
-                    bindtap="onStationTap"
-                    data-id="{{item.id}}"
-            >
-                <view class="station-header">
-                    <text class="station-name">{{item.name}}</text>
-                    <view class="station-status">
-                        <text class="available-count">{{item.availableSlots}}</text>
-                        <text class="total-count">/{{item.totalSlots}}</text>
-                    </view>
-                </view>
+    <!-- 站点卡片 -->
+    <block wx:if="{{!loading && stations.length > 0}}">
+      <view
+        class="station-card fade-in-up"
+        wx:for="{{stations}}"
+        wx:key="id"
+        bindtap="onStationTap"
+        data-id="{{item.id}}"
+        style="animation-delay: {{index * 0.06}}s;"
+      >
+        <!-- 卡片左侧色条 -->
+        <view class="station-accent" style="background: {{item.availableSlots > 0 ? '#4CAF50' : '#ccc'}};"></view>
 
-                <view class="station-info">
-                    <text class="info-text">📍 {{item.address}}</text>
-                </view>
-
-                <view class="station-desc" wx:if="{{item.description}}">
-                    <text class="desc-text">{{item.description}}</text>
-                </view>
-
-                <view class="station-footer">
-                    <text class="footer-text">可借用充电宝</text>
-                    <text class="arrow">›</text>
-                </view>
+        <view class="station-body">
+          <view class="station-top">
+            <view class="station-name-row">
+              <text class="station-name">{{item.name}}</text>
+              <view class="badge {{item.availableSlots > 0 ? 'badge-success' : 'badge-neutral'}}">
+                {{item.availableSlots > 0 ? '有可借' : '已借满'}}
+              </view>
             </view>
-        </block>
+            <view class="station-slots">
+              <view class="slots-ring">
+                <text class="slots-num">{{item.availableSlots}}</text>
+                <text class="slots-total">/{{item.totalSlots}}</text>
+              </view>
+              <text class="slots-label">可用槽位</text>
+            </view>
+          </view>
 
-        <view class="empty-state" wx:if="{{stations.length === 0 && !loading}}">
-            <text class="empty-text">暂无投放点</text>
-        </view>
+          <view class="station-address">
+            <text class="addr-icon">📍</text>
+            <text class="addr-text">{{item.address}}</text>
+          </view>
 
-        <view class="loading-state" wx:if="{{loading}}">
-            <text class="loading-text">加载中...</text>
+          <view class="station-desc" wx:if="{{item.description}}">
+            <text class="desc-text">{{item.description}}</text>
+          </view>
+
+          <view class="station-bottom">
+            <view class="battery-indicator" wx:if="{{item.availableSlots > 0}}">
+              <view class="battery-dots">
+                <view class="battery-dot" wx:for="{{[1,2,3,4,5]}}" wx:key="*this"
+                  style="background: {{index < (item.availableSlots / item.totalSlots * 5) ? '#4CAF50' : '#e8e8e8'}};">
+                </view>
+              </view>
+              <text class="battery-text">可用 {{item.availableSlots}} 个充电宝</text>
+            </view>
+            <view wx:else>
+              <text class="no-slot-text">暂无可用</text>
+            </view>
+            <text class="station-arrow">→</text>
+          </view>
         </view>
-    </view>
+      </view>
+    </block>
+  </view>
 </view>

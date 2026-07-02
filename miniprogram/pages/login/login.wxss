@@ -1,89 +1,200 @@
-.login-container {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-    padding: 100rpx 60rpx;
-    box-sizing: border-box;
+/* ============================================
+   登录/注册页
+   ============================================ */
+
+.page-login {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #E8F5E9 0%, #C8E6C9 30%, #A5D6A7 60%, #81C784 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 40rpx;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
+/* --- 背景装饰 --- */
+.bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  pointer-events: none;
+}
+
+.bg-circle-1 {
+  width: 500rpx;
+  height: 500rpx;
+  top: -180rpx;
+  right: -160rpx;
+}
+
+.bg-circle-2 {
+  width: 300rpx;
+  height: 300rpx;
+  bottom: 60rpx;
+  left: -100rpx;
+}
+
+/* --- Logo 区 --- */
 .login-header {
-    text-align: center;
-    margin-bottom: 100rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 120rpx;
+  margin-bottom: 50rpx;
 }
 
-.logo {
-    width: 160rpx;
-    height: 160rpx;
-    margin-bottom: 40rpx;
+.logo-wrap {
+  width: 160rpx;
+  height: 160rpx;
+  background: rgba(255,255,255,0.95);
+  border-radius: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.1);
+  margin-bottom: 28rpx;
 }
 
-.title {
-    display: block;
-    font-size: 48rpx;
-    font-weight: bold;
-    color: #fff;
-    margin-bottom: 20rpx;
+.logo-img {
+  width: 120rpx;
+  height: 120rpx;
 }
 
-.subtitle {
-    display: block;
-    font-size: 28rpx;
-    color: rgba(255, 255, 255, 0.8);
+.app-name {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2rpx 8rpx rgba(0,0,0,0.1);
+  letter-spacing: 4rpx;
 }
 
-.login-form {
-    background: #fff;
-    border-radius: 24rpx;
-    padding: 60rpx 40rpx;
-    box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+.app-slogan {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.8);
+  margin-top: 10rpx;
+  letter-spacing: 4rpx;
 }
 
-.form-item {
-    margin-bottom: 40rpx;
+/* --- 登录卡片 --- */
+.login-card {
+  width: 100%;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16rpx 48rpx rgba(0,0,0,0.1);
+  overflow: hidden;
+  animation: fadeInUp 0.5s ease-out;
 }
 
-.form-label {
-    font-size: 28rpx;
-    color: #333;
-    margin-bottom: 20rpx;
-    font-weight: 500;
+/* --- 模式切换 --- */
+.mode-tabs {
+  display: flex;
+  border-bottom: 1rpx solid var(--border);
 }
 
-.form-input {
-    width: 100%;
-    height: 88rpx;
-    border: 2rpx solid #e0e0e0;
-    border-radius: 12rpx;
-    padding: 0 24rpx;
-    font-size: 28rpx;
-    box-sizing: border-box;
+.mode-tab {
+  flex: 1;
+  text-align: center;
+  padding: 30rpx 0;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-hint);
+  position: relative;
+  transition: color 0.3s;
 }
 
-.form-input:focus {
-    border-color: #4CAF50;
+.mode-tab.active {
+  color: var(--primary);
 }
 
+.mode-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 6rpx;
+  background: var(--primary);
+  border-radius: 3rpx;
+}
+
+/* --- 表单 --- */
+.form-area {
+  padding: 40rpx 36rpx 44rpx;
+}
+
+.input-group {
+  margin-bottom: 32rpx;
+}
+
+.input-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12rpx;
+  letter-spacing: 1rpx;
+}
+
+.input-wrap {
+  display: flex;
+  align-items: center;
+  height: 92rpx;
+  background: #f7f8fa;
+  border-radius: var(--radius-md);
+  padding: 0 20rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.input-wrap:focus-within {
+  border-color: var(--primary);
+  background: #fff;
+  box-shadow: 0 0 0 6rpx rgba(76,175,80,0.06);
+}
+
+.input-prefix {
+  font-size: 32rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.input-field-clean {
+  flex: 1;
+  height: 100%;
+  font-size: 28rpx;
+  color: var(--text-primary);
+}
+
+.input-eye {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  flex-shrink: 0;
+}
+
+/* --- 提交按钮 --- */
 .submit-btn {
-    width: 100%;
-    height: 88rpx;
-    background: #4CAF50;
-    color: #fff;
-    border-radius: 12rpx;
-    font-size: 32rpx;
-    font-weight: bold;
-    margin-top: 40rpx;
-    border: none;
+  width: 100%;
+  margin-top: 20rpx;
+  height: 96rpx;
+  border-radius: var(--radius-full);
+  font-size: 32rpx;
+  font-weight: 700;
+  letter-spacing: 8rpx;
 }
 
-.submit-btn::after {
-    border: none;
+/* --- 底部 --- */
+.login-footer {
+  margin-top: auto;
+  padding: 40rpx 0 60rpx;
 }
 
-.toggle-mode {
-    text-align: center;
-    margin-top: 40rpx;
-}
-
-.toggle-mode text {
-    font-size: 28rpx;
-    color: #4CAF50;
+.login-footer text {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.7);
 }

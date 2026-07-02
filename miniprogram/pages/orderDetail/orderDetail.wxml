@@ -1,76 +1,106 @@
-<view class="order-detail-container" wx:if="{{!loading && order}}">
-    <view class="status-card">
-        <view class="status-icon">🔋</view>
-        <view class="status-text" style="color: {{getStatusColor(order.status)}}">
-            {{getStatusText(order.status)}}
-        </view>
-    </view>
-
-    <view class="info-card">
-        <view class="card-title">订单信息</view>
-
-        <view class="info-row">
-            <text class="info-label">订单号：</text>
-            <text class="info-value">{{order.id}}</text>
-        </view>
-
-        <view class="info-row">
-            <text class="info-label">充电宝编号：</text>
-            <text class="info-value">{{order.powerBankSerialNumber}}</text>
-        </view>
-
-        <view class="info-row">
-            <text class="info-label">投放点：</text>
-            <text class="info-value">{{order.stationName}}</text>
-        </view>
-
-        <view class="info-row">
-            <text class="info-label">借用时间：</text>
-            <text class="info-value">{{order.rentTime}}</text>
-        </view>
-
-        <view class="info-row" wx:if="{{order.returnTime}}">
-            <text class="info-label">归还时间：</text>
-            <text class="info-value">{{order.returnTime}}</text>
-        </view>
-
-        <view class="info-row" wx:if="{{order.amount}}">
-            <text class="info-label">费用：</text>
-            <text class="info-value amount">¥{{order.amount}}</text>
-        </view>
-    </view>
-
-    <view class="info-card" wx:if="{{order.status === 1}}">
-        <view class="card-title">实时计费</view>
-
-        <view class="duration-display">
-            <text class="duration-text">{{runningDuration}}</text>
-        </view>
-
-        <view class="fee-display">
-            <text class="fee-label">当前费用：</text>
-            <text class="fee-amount">¥{{runningFee}}</text>
-        </view>
-
-        <view class="tips-text">
-            <text>1元/小时，不足1小时按1小时计算</text>
-        </view>
-    </view>
-
-    <view class="info-card" wx:if="{{order.status === 2 && order.amount}}">
-        <view class="card-title">费用明细</view>
-
-        <view class="fee-display">
-            <text class="fee-label">实际费用：</text>
-            <text class="fee-amount">¥{{order.amount}}</text>
-        </view>
-    </view>
-
-    <view class="button-group" wx:if="{{order.status === 1}}">
-        <button class="return-btn" bindtap="onReturnOrder">去归还</button>
-    </view>
-</view>
-
-<view class="loading-container" wx:if="{{loading}}">
+<view class="page-order-detail">
+  <!-- 加载 -->
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <text class="loading-icon pulse">🔋</text>
     <text class="loading-text">加载中...</text>
+  </view>
+
+  <block wx:if="{{!loading && order}}">
+    <!-- 状态头部 -->
+    <view class="detail-status-card" style="background: {{getStatusCardBg(order.status)}};">
+      <text class="detail-status-icon">{{getStatusIcon(order.status)}}</text>
+      <text class="detail-status-text">{{getStatusText(order.status)}}</text>
+      <text class="detail-status-desc">{{getStatusDesc(order.status)}}</text>
+    </view>
+
+    <!-- 订单进度 -->
+    <view class="progress-steps">
+      <view class="step {{order.status >= 1 ? 'done' : ''}}">
+        <view class="step-dot-wrap">
+          <view class="step-dot"></view>
+        </view>
+        <text class="step-label">借出</text>
+      </view>
+      <view class="step-line {{order.status >= 2 ? 'done' : ''}}"></view>
+      <view class="step {{order.status >= 2 ? 'done' : ''}}">
+        <view class="step-dot-wrap">
+          <view class="step-dot"></view>
+        </view>
+        <text class="step-label">归还</text>
+      </view>
+      <view class="step-line {{order.status >= 3 ? 'done' : ''}}"></view>
+      <view class="step {{order.status >= 3 ? 'done' : ''}}">
+        <view class="step-dot-wrap">
+          <view class="step-dot"></view>
+        </view>
+        <text class="step-label">完成</text>
+      </view>
+    </view>
+
+    <!-- 订单信息 -->
+    <view class="detail-card">
+      <view class="detail-card-header">
+        <text class="detail-card-title">订单信息</text>
+        <text class="detail-card-badge">#{{order.id}}</text>
+      </view>
+      <view class="detail-list">
+        <view class="detail-row">
+          <text class="detail-label">充电宝编号</text>
+          <text class="detail-value">{{order.powerBankSerialNumber}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">投放点</text>
+          <text class="detail-value">{{order.stationName}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">借用时间</text>
+          <text class="detail-value">{{order.rentTime}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{order.returnTime}}">
+          <text class="detail-label">归还时间</text>
+          <text class="detail-value">{{order.returnTime}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 实时计费（使用中） -->
+    <view class="detail-card fee-live-card" wx:if="{{order.status === 1}}">
+      <view class="fee-live-header">
+        <view class="dot dot-success pulse"></view>
+        <text class="detail-card-title">实时计费</text>
+      </view>
+      <view class="fee-live-body">
+        <view class="fee-timer">
+          <text class="timer-text">{{runningDuration}}</text>
+        </view>
+        <view class="fee-live-divider"></view>
+        <view class="fee-amount-block">
+          <text class="fee-live-label">当前费用</text>
+          <view class="fee-live-price">
+            <text class="fee-live-symbol">¥</text>
+            <text class="fee-live-num">{{runningFee}}</text>
+          </view>
+        </view>
+        <view class="fee-rate-hint">
+          <text>1元/小时 · 不足1小时按1小时计算</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 费用明细（已归还） -->
+    <view class="detail-card" wx:if="{{order.status === 2 && order.amount}}">
+      <view class="detail-card-header">
+        <text class="detail-card-title">费用明细</text>
+      </view>
+      <view class="fee-settled-block">
+        <text class="fee-settled-label">实际费用</text>
+        <text class="fee-settled-amount">¥{{order.amount}}</text>
+      </view>
+    </view>
+
+    <!-- 归还按钮 -->
+    <view class="detail-action" wx:if="{{order.status === 1}}">
+      <button class="btn btn-primary" bindtap="onReturnOrder">去归还充电宝</button>
+    </view>
+  </block>
 </view>

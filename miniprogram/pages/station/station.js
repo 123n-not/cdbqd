@@ -5,14 +5,13 @@ Page({
         stationId: null,
         station: null,
         powerBanks: [],
-        loading: true
+        loading: true,
+        loadingPowerBanks: true
     },
 
     onLoad(options) {
         if (options.id) {
-            this.setData({
-                stationId: options.id
-            })
+            this.setData({ stationId: options.id })
             this.loadStationDetail()
             this.loadPowerBanks()
         }
@@ -21,11 +20,10 @@ Page({
     async loadStationDetail() {
         try {
             const res = await request.get(`/station/${this.data.stationId}`)
-
             if (res.code === 200) {
-                this.setData({
-                    station: res.data
-                })
+                const station = res.data
+                station.availRate = Math.round(station.availableSlots / station.totalSlots * 100)
+                this.setData({ station })
             }
         } catch (error) {
             console.error('加载投放点详情失败:', error)
@@ -33,7 +31,7 @@ Page({
     },
 
     async loadPowerBanks() {
-        this.setData({ loading: true })
+        this.setData({ loading: true, loadingPowerBanks: true })
 
         try {
             const res = await request.get('/powerbank/list', {
@@ -44,13 +42,14 @@ Page({
             if (res.code === 200) {
                 const powerBanks = (res.data || []).filter(item => item.batteryLevel >= 20)
                 this.setData({
-                    powerBanks: powerBanks,
-                    loading: false
+                    powerBanks,
+                    loading: false,
+                    loadingPowerBanks: false
                 })
             }
         } catch (error) {
             console.error('加载充电宝列表失败:', error)
-            this.setData({ loading: false })
+            this.setData({ loading: false, loadingPowerBanks: false })
         }
     },
 

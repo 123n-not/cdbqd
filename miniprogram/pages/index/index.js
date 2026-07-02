@@ -5,6 +5,7 @@ Page({
     data: {
         stations: [],
         keyword: '',
+        tag: 'nearby',
         loading: false,
         mapLatitude: 39.9139,
         mapLongitude: 116.3914,
@@ -15,6 +16,7 @@ Page({
     onLoad() {
         this.checkLogin()
         this.loadStations()
+        this.getCurrentLocation()
     },
 
     onShow() {
@@ -35,16 +37,64 @@ Page({
         }
     },
 
-    onSearchInput(e) {
-        this.setData({
-            keyword: e.detail.value
+    /* --- 定位 --- */
+    getCurrentLocation() {
+        wx.getLocation({
+            type: 'gcj02',
+            success: (res) => {
+                this.setData({
+                    mapLatitude: res.latitude,
+                    mapLongitude: res.longitude
+                })
+            },
+            fail: () => {
+                console.log('获取位置失败，使用默认位置')
+            }
         })
+    },
+
+    onLocateMe() {
+        wx.getLocation({
+            type: 'gcj02',
+            success: (res) => {
+                this.setData({
+                    mapLatitude: res.latitude,
+                    mapLongitude: res.longitude,
+                    mapScale: 16
+                })
+                wx.showToast({ title: '已定位', icon: 'success', duration: 800 })
+            },
+            fail: () => {
+                wx.showToast({ title: '定位失败，请检查权限', icon: 'none' })
+            }
+        })
+    },
+
+    /* --- 搜索 --- */
+    onSearchInput(e) {
+        this.setData({ keyword: e.detail.value })
+    },
+
+    onClearSearch() {
+        this.setData({ keyword: '' })
+        this.loadStations()
     },
 
     onSearch() {
         this.loadStations()
     },
 
+    /* --- 快捷标签 --- */
+    onQuickTag(e) {
+        const tag = e.currentTarget.dataset.tag
+        this.setData({ tag })
+        if (tag === 'nearby') {
+            this.getCurrentLocation()
+        }
+        this.loadStations()
+    },
+
+    /* --- 加载站点 --- */
     async loadStations() {
         this.setData({ loading: true })
 
@@ -57,12 +107,15 @@ Page({
             const res = await request.get('/station/list', params)
 
             if (res.code === 200) {
-                const stations = res.data || []
+                let stations = res.data || []
+
+                // 快捷标签筛选（前端兜底）
+                if (this.data.tag === 'highBattery') {
+                    stations = stations.filter(s => s.availableSlots > 0)
+                }
+
                 const markers = this.buildMarkers(stations)
-                this.setData({
-                    stations: stations,
-                    markers: markers
-                })
+                this.setData({ stations, markers })
             }
         } catch (error) {
             console.error('加载投放点失败:', error)
@@ -71,26 +124,33 @@ Page({
         }
     },
 
+    /* --- 构建地图标记 --- */
     buildMarkers(stations) {
         return stations
             .filter(item => item.latitude && item.longitude)
-            .map((item, index) => ({
+            .map((item) => ({
                 id: item.id,
                 latitude: item.latitude,
                 longitude: item.longitude,
                 title: item.name,
-                width: 30,
-                height: 30,
+                width: 36,
+                height: 36,
+                iconPath: item.availableSlots > 0
+                    ? '/images/marker-station.png'
+                    : '',
                 callout: {
                     content: item.name + '\n可用 ' + item.availableSlots + '/' + item.totalSlots,
-                    fontSize: 13,
-                    borderRadius: 8,
-                    padding: 8,
-                    display: 'ALWAYS'
+                    fontSize: 12,
+                    borderRadius: 10,
+                    padding: 10,
+                    display: 'ALWAYS',
+                    bgColor: '#ffffff',
+                    color: '#333333'
                 }
             }))
     },
 
+    /* --- 事件 --- */
     onMarkerTap(e) {
         const stationId = e.detail.markerId
         wx.navigateTo({

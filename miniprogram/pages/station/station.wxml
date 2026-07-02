@@ -1,63 +1,126 @@
-<view class="station-container" wx:if="{{station}}">
-    <view class="station-info-card">
-        <view class="station-header">
-            <text class="station-name">{{station.name}}</text>
-        </view>
+<view class="page-station">
+  <!-- 加载骨架 -->
+  <block wx:if="{{loading}}">
+    <view class="station-hero-skeleton">
+      <view class="skeleton" style="height: 40rpx; width: 50%; margin-bottom: 16rpx;"></view>
+      <view class="skeleton skeleton-line short"></view>
+      <view class="skeleton skeleton-line" style="width: 70%;"></view>
+    </view>
+    <view class="container">
+      <view class="skeleton" style="height: 32rpx; width: 40%; margin-bottom: 20rpx;"></view>
+      <view class="station-skeleton" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="skeleton" style="height: 36rpx; width: 55%; margin-bottom: 16rpx;"></view>
+        <view class="skeleton skeleton-line" style="width: 45%;"></view>
+        <view class="skeleton" style="height: 60rpx; margin-top: 20rpx;"></view>
+      </view>
+    </view>
+  </block>
 
-        <view class="info-row">
-            <text class="info-label">📍 地址：</text>
-            <text class="info-value">{{station.address}}</text>
+  <!-- 内容 -->
+  <block wx:if="{{!loading && station}}">
+    <!-- 站点头部 -->
+    <view class="station-hero">
+      <view class="hero-content">
+        <text class="hero-name">{{station.name}}</text>
+        <view class="hero-address">
+          <text>📍 {{station.address}}</text>
         </view>
-
-        <view class="info-row" wx:if="{{station.description}}">
-            <text class="info-label">📝 描述：</text>
-            <text class="info-value">{{station.description}}</text>
+        <view class="hero-desc" wx:if="{{station.description}}">
+          <text>📝 {{station.description}}</text>
         </view>
-
-        <view class="info-row">
-            <text class="info-label">🔌 可用：</text>
-            <text class="info-value highlight">{{station.availableSlots}}/{{station.totalSlots}}</text>
+        <!-- 槽位统计 -->
+        <view class="hero-stats">
+          <view class="hero-stat">
+            <text class="hero-stat-num highlight">{{station.availableSlots}}</text>
+            <text class="hero-stat-label">可用</text>
+          </view>
+          <view class="hero-stat-divider"></view>
+          <view class="hero-stat">
+            <text class="hero-stat-num">{{station.totalSlots}}</text>
+            <text class="hero-stat-label">总槽位</text>
+          </view>
+          <view class="hero-stat-divider"></view>
+          <view class="hero-stat">
+            <text class="hero-stat-num secondary">{{station.totalSlots - station.availableSlots}}</text>
+            <text class="hero-stat-label">已占用</text>
+          </view>
         </view>
+        <!-- 进度条 -->
+        <view class="hero-progress">
+          <view class="progress-bar">
+            <view class="progress-fill" style="width: {{station.availableSlots / station.totalSlots * 100}}%;"></view>
+          </view>
+          <text class="progress-text">可用率 {{station.availRate}}%</text>
+        </view>
+      </view>
     </view>
 
-    <view class="powerbank-section">
-        <view class="section-title">可借用充电宝</view>
+    <!-- 充电宝列表 -->
+    <view class="container">
+      <view class="section-header">
+        <text class="section-title">可借用充电宝</text>
+        <text class="section-count">{{powerBanks.length}} 个</text>
+      </view>
 
-        <view class="powerbank-list">
-            <block wx:if="{{powerBanks.length > 0}}">
-                <view
-                        class="powerbank-card"
-                        wx:for="{{powerBanks}}"
-                        wx:key="id"
-                        bindtap="onRentPowerBank"
-                        data-id="{{item.id}}"
-                >
-                    <view class="powerbank-header">
-                        <text class="powerbank-id">编号：{{item.serialNumber}}</text>
-                        <view class="battery-level">
-                            <text class="battery-text">{{item.batteryLevel}}%</text>
-                        </view>
-                    </view>
-
-                    <view class="powerbank-body">
-                        <view class="status-badge">
-                            <text class="status-text">可借用</text>
-                        </view>
-                    </view>
-
-                    <view class="powerbank-footer">
-                        <text class="rent-btn">点击借用</text>
-                    </view>
-                </view>
-            </block>
-
-            <view class="empty-state" wx:if="{{powerBanks.length === 0 && !loading}}">
-                <text class="empty-text">暂无可借用充电宝</text>
-            </view>
-
-            <view class="loading-state" wx:if="{{loading}}">
-                <text class="loading-text">加载中...</text>
-            </view>
+      <!-- 骨架 -->
+      <block wx:if="{{loadingPowerBanks}}">
+        <view class="station-skeleton" wx:for="{{[1,2]}}" wx:key="*this">
+          <view class="skeleton" style="height: 36rpx; width: 55%; margin-bottom: 16rpx;"></view>
+          <view class="skeleton skeleton-line" style="width: 45%;"></view>
         </view>
+      </block>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{powerBanks.length === 0 && !loadingPowerBanks}}">
+        <text class="empty-icon-large">🔌</text>
+        <text class="empty-title">暂无可借充电宝</text>
+        <text class="empty-desc">当前投放点的充电宝都已被借出或电量不足</text>
+      </view>
+
+      <!-- 充电宝卡片 -->
+      <block wx:if="{{!loadingPowerBanks && powerBanks.length > 0}}">
+        <view
+          class="pb-card fade-in-up"
+          wx:for="{{powerBanks}}"
+          wx:key="id"
+          bindtap="onRentPowerBank"
+          data-id="{{item.id}}"
+          style="animation-delay: {{index * 0.06}}s;"
+        >
+          <!-- 电池图标 -->
+          <view class="pb-battery-col">
+            <view class="pb-battery-icon {{item.batteryLevel >= 80 ? 'high' : item.batteryLevel >= 50 ? 'mid' : 'low'}}">
+              <text class="pb-battery-num">{{item.batteryLevel}}</text>
+              <text class="pb-battery-pct">%</text>
+            </view>
+            <view class="pb-battery-bar-bg">
+              <view class="pb-battery-bar-fill {{item.batteryLevel >= 80 ? 'high' : item.batteryLevel >= 50 ? 'mid' : 'low'}}"
+                style="height: {{item.batteryLevel}}%;"></view>
+            </view>
+          </view>
+
+          <!-- 信息区 -->
+          <view class="pb-info">
+            <view class="pb-info-row">
+              <text class="pb-label">编号</text>
+              <text class="pb-value">{{item.serialNumber}}</text>
+            </view>
+            <view class="pb-info-row">
+              <text class="pb-label">状态</text>
+              <view class="badge badge-success">可借用</view>
+            </view>
+            <view class="pb-info-row">
+              <text class="pb-label">电量评级</text>
+              <text class="pb-value {{item.batteryLevel >= 80 ? 'text-primary' : item.batteryLevel >= 50 ? 'text-warning' : 'text-danger'}} text-bold">
+                {{item.batteryLevel >= 80 ? '优秀' : item.batteryLevel >= 50 ? '良好' : '偏低'}}
+              </text>
+            </view>
+          </view>
+
+          <!-- 借用按钮 -->
+          <view class="pb-rent-arrow">→</view>
+        </view>
+      </block>
     </view>
+  </block>
 </view>
